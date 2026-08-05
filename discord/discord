@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+# DESC: Install/update Discord (downloads latest tarball to /opt)
+set -e
+
+# Define variables
+SCRIPT_NAME="discord"
+SCRIPT_PATH="$(readlink -f "$0")"
+LOCAL_BIN_DIR="$HOME/.local/bin"
+DISCORD_DIR="/opt/Discord"
+DISCORD_BIN="/usr/bin/Discord"
+DESKTOP_FILE="/usr/share/applications/discord.desktop"
+
+# Download function with fallback
+download_discord() {
+    if command -v wget >/dev/null 2>&1; then
+        wget -q "https://discord.com/api/download?platform=linux&format=tar.gz" -O "$TAR_FILE" || return 1
+    elif command -v curl >/dev/null 2>&1; then
+        curl -sL "https://discord.com/api/download?platform=linux&format=tar.gz" -o "$TAR_FILE" || return 1
+    else
+        echo "Error: Neither wget nor curl found"
+        return 1
+    fi
+}
+
+# Auto-setup function (runs on first install)
+auto_setup() {
+    # Check if we're already running from ~/.local/bin
+    if [[ "$SCRIPT_PATH" == "$LOCAL_BIN_DIR/$SCRIPT_NAME" ]]; then
+        return 0
+    fi
+
+    echo "First-time setup: Installing discord updater to ~/.local/bin..."
+
+    mkdir -p "$LOCAL_BIN_DIR"
+    cp "$SCRIPT_PATH" "$LOCAL_BIN_DIR/$SCRIPT_NAME"
+    chmod +x "$LOCAL_BIN_DIR/$SCRIPT_NAME"
+
+    # Add to PATH if not present
+    case "$(basename "$SHELL")" in
+        bash) CONFIG_FILE="$HOME/.bashrc";  PATH_LINE="export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
+        zsh)  CONFIG_FILE="$HOME/.zshrc";   PATH_LINE="export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
+        fish)
+            CONFIG_FILE="$HOME/.config/fish/config.fish"
+            mkdir -p "$(dirname "$CONFIG_FILE")"
+            PATH_LINE="set -x PATH \$HOME/.local/bin \$PATH"
+            ;;
+        *)    CONFIG_FILE="$HOME/.profile"; PATH_LINE="export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
+    esac
+    # Only touch the rc file if ~/.local/bin isn't already reachable
+    case ":$PATH:" in
+        *":$LOCAL_BIN_DIR:"*) ;;
+        *)  echo "$PATH_LINE" >> "$CONFIG_FILE"
+            echo "Added ~/.local/bin to PATH in $CONFIG_FILE (restart your shell)" ;;
+    esac
+
+    echo "✓ Discord updater installed to ~/.local/bin"
+    echo ""
+
+    # Re-execute from the installed location with original args
+    exec "$LOCAL_BIN_DIR/$SCRIPT_NAME" "$@"
+}
+
+# Install function
+install() {
+    # Auto-setup on first run (re-execs from ~/.local/bin if needed)
+    auto_setup "$@"
+
+    # Discord only ships x86_64 Linux tarballs
+    if [[ "$(uname -m)" != "x86_64" ]]; then
+        echo "Error: Discord only ships x86_64 Linux binaries (detected: $(uname -m))"
+        exit 1
+    fi
+
+    # Warn if Discord is currently running
+    if pgrep -x Discord >/dev/null 2>&1; then
+        echo "Warning: Discord is currently running. Close it before updating to avoid a broken install."
+        read -rp "Continue anyway? [y/N] " ans || ans=""
+        [[ "$ans" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
+    fi
+
+    TAR_FILE="$(mktemp --suffix=.tar.gz)"
+    trap 'rm -f "$TAR_FILE"' EXIT
+
+    download_discord || exit 1
+
+    # Clean old installation
+    sudo rm -rf "$DISCORD_DIR" "$DISCORD_BIN" "$DESKTOP_FILE"
+
+    # Extract and install
+    sudo tar -xf "$TAR_FILE" -C /opt/
+
+    # Find the launcher (Discord has shipped both 'Discord' and 'discord')
+    LAUNCHER="$(find "$DISCORD_DIR" -maxdepth 1 -type f -iname discord | head -1)"
+    [[ -x "$LAUNCHER" ]] || { echo "Error: no Discord launcher found in $DISCORD_DIR"; exit 1; }
+
+    # Create symlink
+    sudo ln -sf "$LAUNCHER" "$DISCORD_BIN"
+
+    # Create desktop entry
+    sudo bash -c "cat > '$DESKTOP_FILE' << EOF
+[Desktop Entry]
+Name=Discord
+StartupWMClass=discord
+Comment=All-in-one voice and text chat
+GenericName=Internet Messenger
+Exec=/usr/bin/Discord
+Icon=/opt/Discord/discord.png
+Type=Application
+Categories=Network;InstantMessaging;
+Path=/usr/bin
+EOF"
+
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "✨ 🎉 DISCORD INSTALLED SUCCESSFULLY! 🎉 ✨"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+}
+
+# Uninstall function
+uninstall() {
+    sudo rm -rf "$DISCORD_DIR" "$DISCORD_BIN" "$DESKTOP_FILE"
+}
+
+# Show help
+help() {
+    echo "Usage: $0 [install|update|uninstall|help]"
+    echo "  install    Install/update Discord (default)"
+    echo "  update     Alias for install"
+    echo "  uninstall  Remove Discord"
+    echo "  help       Show this help"
+    echo ""
+    echo "Note: First run automatically installs the updater to ~/.local/bin"
+}
+
+# Main
+case "$1" in
+    install|update|"") install "$@" ;;
+    uninstall) uninstall ;;
+    help|-h|--help) help ;;
+    *) echo "Unknown option: $1"; help; exit 1 ;;
+esac

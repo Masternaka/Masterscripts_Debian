@@ -1,0 +1,51 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+    // ── butter.jsonc ──────────────────────────────────────────────
+    // Narrow, warm, elegant. Cream + butter + deep gold.
+    // Logo above content (no side-by-side), centered card header.
+    // Width target: ~30 columns.
+
+    "logo": { "type": "none" },
+
+    "display": {
+        "separator": "  \u001b[38;5;178m·\u001b[0m  ",
+        "color": { "keys": "yellow" },
+        "brightColor": false
+    },
+
+    "modules": [
+        "break",
+
+        { "type": "custom", "format": "    \u001b[38;5;220m╭──────────────────╮\u001b[0m" },
+        { "type": "custom", "format": "    \u001b[38;5;220m│\u001b[0m 🧈 \u001b[1;38;5;230mbutter\u001b[38;5;222mbian\u001b[0m 🧈 \u001b[38;5;220m│\u001b[0m" },
+        { "type": "custom", "format": "    \u001b[38;5;220m╰──────────────────╯\u001b[0m" },
+        "break",
+
+        {
+            "type": "title",
+            "format": "      \u001b[38;5;230m{user-name}\u001b[38;5;178m @ \u001b[38;5;222m{host-name}\u001b[0m"
+        },
+        { "type": "custom", "format": "    \u001b[38;5;178m─ ─ ─ ─ ─ ─ ─ ─\u001b[0m" },
+
+        { "type": "os",       "key": "     os",   "format": "{name}",    "keyColor": "yellow" },
+        { "type": "kernel",   "key": "    krn",  "format": "{release}", "keyColor": "yellow" },
+        { "type": "uptime",   "key": "     up",   "keyColor": "yellow" },
+        { "type": "wm",       "key": "     wm",   "keyColor": "yellow" },
+        { "type": "shell",    "key": "     sh",   "format": "{pretty-name}", "keyColor": "yellow" },
+        { "type": "terminal", "key": "    tty",  "keyColor": "yellow" },
+        { "type": "packages", "key": "    pkg",  "keyColor": "yellow" },
+        { "type": "memory",   "key": "    ram",  "keyColor": "yellow",
+          "percent": { "type": 0 } },
+        { "type": "disk",     "key": "    hdd",  "format": "{size-used} / {size-total}", "keyColor": "yellow" },
+
+        "break",
+
+        {
+            "type": "custom",
+            "format": "    \u001b[48;5;130m  \u001b[48;5;172m  \u001b[48;5;178m  \u001b[48;5;214m  \u001b[48;5;220m  \u001b[48;5;222m  \u001b[48;5;230m  \u001b[0m"
+        },
+        { "type": "custom", "format": "  \u001b[38;5;178mbutterbian.org\u001b[38;5;222m · \u001b[38;5;230mjustaguylinux.com\u001b[0m" },
+        "break"
+    ]
+}

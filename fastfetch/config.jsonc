@@ -1,0 +1,49 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+    // ── butterknife.jsonc ─────────────────────────────────────────
+    // Knife-shaped header: top blade points right with a sharp tip,
+    // bottom blade trails. Title is spaced out like an etched blade.
+    // Steel/silver palette + butter-gold tip. `│` pipe separator.
+
+    "logo": { "type": "none" },
+
+    "display": {
+        "separator": " \u001b[38;5;245m│\u001b[0m ",
+        "color": { "keys": "white" },
+        "brightColor": false
+    },
+
+    "modules": [
+        "break",
+
+        { "type": "custom", "format": "  \u001b[38;5;249m◤━━━━━━━━━━━━━━━━━━━━━━━\u001b[38;5;220m╾▶\u001b[0m" },
+        { "type": "custom", "format": "      \u001b[1;38;5;254mB\u001b[38;5;249m U \u001b[38;5;254mT\u001b[38;5;249m T \u001b[38;5;254mE\u001b[38;5;249m R \u001b[38;5;254mK\u001b[38;5;249m N \u001b[38;5;254mI\u001b[38;5;249m F \u001b[38;5;254mE\u001b[0m" },
+        { "type": "custom", "format": "  \u001b[38;5;249m◣━━━━━━━━━━━━━━━━━━━━━━━\u001b[38;5;220m╼\u001b[0m" },
+        "break",
+
+        {
+            "type": "title",
+            "format": "  \u001b[38;5;254m{user-name}\u001b[38;5;220m @ \u001b[38;5;254m{host-name}\u001b[0m"
+        },
+        "break",
+
+        { "type": "os",       "key": "    os ", "format": "{name}",    "keyColor": "white" },
+        { "type": "kernel",   "key": "   krn ", "format": "{release}", "keyColor": "white" },
+        { "type": "uptime",   "key": "    up ", "keyColor": "white" },
+        { "type": "wm",       "key": "    wm ", "keyColor": "white" },
+        { "type": "shell",    "key": "    sh ", "format": "{pretty-name}", "keyColor": "white" },
+        { "type": "terminal", "key": "   tty ", "keyColor": "white" },
+        { "type": "packages", "key": "   pkg ", "keyColor": "white" },
+        { "type": "memory",   "key": "   ram ",
+          "format": "{used} / {total}", "keyColor": "white",
+          "percent": { "type": 0 } },
+        { "type": "disk",     "key": "   hdd ", "format": "{size-used} / {size-total}", "keyColor": "white" },
+
+        "break",
+
+        { "type": "custom", "format": "  \u001b[38;5;249m◤━━━━━━━━━━━━━━━━━━━━━━━\u001b[38;5;220m╾▶\u001b[0m" },
+        { "type": "custom", "format": "  \u001b[38;5;245mbutterbian.org · justaguylinux.com\u001b[0m" },
+        "break"
+    ]
+}

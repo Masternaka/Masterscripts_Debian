@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+# clipmkv: losslessly clip an mkv by start/end timestamps
+
+VIDEOS=$HOME/Videos
+
+case ${1:-} in
+	-h|--help)
+		cat <<EOF
+usage: clipmkv [file]
+Losslessly clip an mkv by start/end timestamps. Without an argument,
+shows a picker for ~/Videos (fzf if installed). After a clip, offers another from the
+same source. Output defaults to <basename>_clip[N].mkv next to source.
+EOF
+		exit 0 ;;
+esac
+
+if ! command -v ffmpeg >/dev/null; then
+	echo "clipmkv: ffmpeg required (apt install ffmpeg / dnf install ffmpeg / pacman -S ffmpeg)" >&2
+	exit 1
+fi
+
+fmt() {
+	awk -v d="$1" 'BEGIN {
+		h=int(d/3600); m=int((d%3600)/60); s=int(d%60)
+		if (h) printf "%d:%02d:%02d", h, m, s
+		else   printf "%d:%02d", m, s
+	}'
+}
+
+# HH:MM:SS, MM:SS, or seconds -> seconds. Empty echoes empty. Bad returns 1.
+parse() {
+	local t=$1
+	[ -z "$t" ] && return 0
+	if [[ $t =~ ^([0-9]+):([0-5]?[0-9]):([0-5]?[0-9])(\.[0-9]+)?$ ]]; then
+		awk "BEGIN{printf \"%.3f\", ${BASH_REMATCH[1]}*3600+${BASH_REMATCH[2]}*60+${BASH_REMATCH[3]}${BASH_REMATCH[4]}}"
+	elif [[ $t =~ ^([0-9]+):([0-5]?[0-9])(\.[0-9]+)?$ ]]; then
+		awk "BEGIN{printf \"%.3f\", ${BASH_REMATCH[1]}*60+${BASH_REMATCH[2]}${BASH_REMATCH[3]}}"
+	elif [[ $t =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+		printf "%.3f" "$t"
+	else
+		return 1
+	fi
+}
+
+# Next free <base>_clip[N].mkv in dir, stripping any existing _clipN suffix
+next() {
+	local d=$1 b=$2 n=2
+	b=${b%_clip}; b=${b%_clip[0-9]}; b=${b%_clip[0-9][0-9]}; b=${b%_clip[0-9][0-9][0-9]}
+	local o=$d/${b}_clip.mkv
+	while [ -e "$o" ]; do o=$d/${b}_clip$n.mkv; n=$((n+1)); done
+	echo "$o"
+}
+
+if [ -n "${1:-}" ]; then
+	[ -f "$1" ] || { echo "clipmkv: $1: not found" >&2; exit 1; }
+	src=$1
+else
+	[ -d "$VIDEOS" ] || { echo "clipmkv: $VIDEOS: not found" >&2; exit 1; }
+	files=()
+	while IFS= read -r -d '' f; do files+=("$f"); done \
+		< <(find "$VIDEOS" -maxdepth 1 -name '*.mkv' -type f -print0 | sort -Vz)
+	[ ${#files[@]} -gt 0 ] || { echo "clipmkv: no mkv files in $VIDEOS" >&2; exit 1; }
+
+	# rows: path<tab>name dur size
+	rows=()
+	for f in "${files[@]}"; do
+		d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$f")
+		rows+=("$(printf '%s\t%-40s  %8s  %6s' "$f" "$(basename "$f")" "$(fmt "${d:-0}")" "$(du -h "$f" | cut -f1)")")
+	done
+
+	if command -v fzf >/dev/null; then
+		src=$(printf '%s\n' "${rows[@]}" | fzf --delimiter='\t' --with-nth=2 \
+			--reverse --height=40% --prompt='clip > ' | cut -f1)
+		[ -n "$src" ] || exit 0
+	else
+		i=1
+		for r in "${rows[@]}"; do printf '%2d  %s\n' "$i" "${r#*$'\t'}"; i=$((i+1)); done
+		while :; do
+			read -p "file: " n
+			[[ $n =~ ^[0-9]+$ ]] && [ "$n" -ge 1 ] && [ "$n" -le ${#files[@]} ] && break
+		done
+		src=${files[$((n-1))]}
+	fi
+fi
+
+dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$src")
+fdur=$(fmt "${dur:-0}")
+dir=$(dirname "$src")
+sb=$(basename "$src" .mkv)
+
+while :; do
+	echo
+	echo "$(basename "$src")  $fdur"
+	echo "(blank = file bounds)"
+	while :; do
+		read -p "start: " s
+		if ! ss=$(parse "$s"); then echo "invalid timestamp" >&2; continue; fi
+		[ -n "$ss" ] && [ -n "$dur" ] && \
+			awk "BEGIN{exit !($ss>=$dur)}" && { echo "past end of file" >&2; continue; }
+		break
+	done
+	while :; do
+		read -p "end:   " e
+		if ! es=$(parse "$e"); then echo "invalid timestamp" >&2; continue; fi
+		[ -n "$es" ] && \
+			awk "BEGIN{exit !($es<=${ss:-0})}" && { echo "end must be after start" >&2; continue; }
+		break
+	done
+
+	sa=("-ss" "${ss:-0}")
+	if [ -n "$es" ]; then
+		ea=("-to" "$es"); ed=$(fmt "$es")
+		len=$(awk "BEGIN{printf \"%.3f\", $es-${ss:-0}}")
+	else
+		ea=(); ed=$fdur
+		len=$(awk "BEGIN{printf \"%.3f\", ${dur:-0}-${ss:-0}}")
+	fi
+
+	def=$(next "$dir" "$sb")
+	read -p "output [$(basename "$def")]: " name
+	if [ -z "$name" ]; then
+		out=$def
+	else
+		[[ $name == *.mkv ]] || name=$name.mkv
+		out=$dir/$name
+	fi
+
+	if [ -e "$out" ] && [ "$out" != "$def" ]; then
+		read -p "overwrite $(basename "$out")? [y/N] " ow
+		[[ $ow =~ ^[Yy]$ ]] || continue
+	fi
+
+	printf '\n%s  %s..%s (%s) -> %s\n' \
+		"$(basename "$src")" \
+		"$(fmt "${ss:-0}")" "$ed" "$(fmt "$len")" \
+		"$(basename "$out")"
+
+	if ffmpeg -hide_banner -loglevel warning -stats -y \
+		"${sa[@]}" "${ea[@]}" -i "$src" -c copy -map 0 "$out"
+	then
+		echo "wrote: $out"
+	else
+		rm -f "$out"
+		echo "clipmkv: ffmpeg failed" >&2
+	fi
+
+	echo
+	read -p "clip another from $(basename "$src")? [y/N] " a
+	[[ $a =~ ^[Yy]$ ]] || break
+done

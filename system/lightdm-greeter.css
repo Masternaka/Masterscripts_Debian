@@ -1,0 +1,91 @@
+/* Butterbian lightdm-gtk-greeter shim
+ *
+ * Install:
+ *   sudo install -d -o lightdm -g lightdm /var/lib/lightdm/.config/gtk-3.0
+ *   sudo install -m 644 -o lightdm -g lightdm \
+ *       lightdm-greeter.css /var/lib/lightdm/.config/gtk-3.0/gtk.css
+ *   sudo systemctl restart lightdm
+ *
+ * Layered on top of Adwaita-dark. The login button stays whatever Adwaita
+ * makes it — its widget is unreachable from CSS in this greeter version.
+ */
+
+/* Brand palette — pulled from butterbian.org's :root tokens */
+@define-color bb_bg     #0d1117;
+@define-color bb_panel  #161b22;
+@define-color bb_fg     #d0d7de;
+@define-color bb_dim    #8b949e;
+@define-color bb_blue   #539bf5;
+@define-color bb_border #2f363d;
+
+/* ── Login modal box ─ flat dark Butterbian bg + thin blue accent line ─ */
+#login_window {
+    background-color: @bb_bg;
+    border: 1px solid @bb_border;
+    border-top: 2px solid @bb_blue;
+    border-radius: 4px;
+    padding: 24px 28px;
+}
+
+/* ── Avatar — soft blue ring ──────────────────────────────────────── */
+#user_image {
+    border-radius: 999px;
+    border: 2px solid @bb_blue;
+}
+
+/* ── Labels — fg color ────────────────────────────────────────────── */
+#login_label,
+#prompt_label {
+    color: @bb_fg;
+}
+
+/* ── Username dropdown — dark panel ───────────────────────────────── */
+#login_window combobox button {
+    background-image: none;
+    background-color: @bb_panel;
+    color: @bb_fg;
+    border: 1px solid @bb_border;
+    border-radius: 3px;
+    padding: 6px 10px;
+}
+#login_window combobox button:focus,
+#login_window combobox button:hover {
+    border-color: @bb_blue;
+}
+
+/* ── Password entry ───────────────────────────────────────────────── */
+#login_window entry,
+#prompt_entry {
+    background-color: @bb_panel;
+    color: @bb_fg;
+    border: 1px solid @bb_border;
+    border-radius: 3px;
+    padding: 6px 10px;
+}
+#login_window entry:focus,
+#prompt_entry:focus {
+    border-color: @bb_blue;
+}
+
+/* Hide the "Enter your password" placeholder. */
+#prompt_entry placeholder,
+#login_window entry placeholder,
+#login_window entry > text > placeholder {
+    color: transparent;
+    opacity: 0;
+}
+
+/* ── Top indicator panel — blend into wallpaper ───────────────────── */
+#panel_window {
+    background-color: rgba(13, 17, 23, 0.85);
+    color: @bb_dim;
+}
+#panel_window button {
+    background-color: transparent;
+    color: @bb_dim;
+    border: 0;
+    padding: 4px 8px;
+}
+#panel_window button:hover {
+    color: @bb_fg;
+}

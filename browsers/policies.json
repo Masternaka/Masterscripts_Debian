@@ -1,0 +1,99 @@
+{
+  "policies": {
+    "OverrideFirstRunPage": "",
+    "DisableProfileImport": true,
+    "NoDefaultBookmarks": true,
+    "DisablePocket": true,
+    "DisableFeedbackCommands": true,
+    "SkipOnboarding": true,
+    "PostQuantumKeyAgreementEnabled": true,
+    "ExtensionSettings": {
+      "uBlock0@raymondhill.net": {
+        "installation_mode": "normal_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi",
+        "private_browsing": true
+      },
+      "google@search.mozilla.org":     { "installation_mode": "blocked" },
+      "bing@search.mozilla.org":       { "installation_mode": "blocked" },
+      "amazondotcom@search.mozilla.org": { "installation_mode": "blocked" },
+      "ebay@search.mozilla.org":       { "installation_mode": "blocked" },
+      "twitter@search.mozilla.org":    { "installation_mode": "blocked" },
+      "ddg@search.mozilla.org":        { "installation_mode": "blocked" }
+    },
+    "SearchEngines": {
+      "PreventInstalls": false,
+      "Remove": ["Google", "Bing", "Amazon.com", "eBay", "Twitter", "Perplexity"],
+      "Default": "DuckDuckGo Lite",
+      "Add": [
+        {
+          "Name": "Startpage",
+          "URLTemplate": "https://www.startpage.com/sp/search?query={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://www.startpage.com/favicon.ico",
+          "Alias": ":sp",
+          "Description": "Startpage Private Search"
+        },
+        {
+          "Name": "Searx Belgium",
+          "URLTemplate": "https://searx.be/?q={searchTerms}",
+          "Method": "POST",
+          "PostData": "q={searchTerms}&category_general=on",
+          "SuggestURLTemplate": "https://searx.be/autocompleter?q={searchTerms}",
+          "IconURL": "https://searx.be/favicon.ico",
+          "Alias": ":sx",
+          "Description": "Privacy-respecting metasearch engine"
+        },
+        {
+          "Name": "Brave Search",
+          "URLTemplate": "https://search.brave.com/search?q={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://search.brave.com/favicon.ico",
+          "Alias": ":b",
+          "Description": "Brave Privacy Search"
+        },
+        {
+          "Name": "DuckDuckGo Lite",
+          "URLTemplate": "https://start.duckduckgo.com/lite/?q={searchTerms}",
+          "Method": "POST",
+          "PostData": "q={searchTerms}",
+          "SuggestURLTemplate": "https://ac.duckduckgo.com/ac/?q={searchTerms}&type=list",
+          "IconURL": "https://duckduckgo.com/favicon.ico",
+          "Alias": ":d",
+          "Description": "Minimal, ad-free version of DuckDuckGo"
+        },
+        {
+          "Name": "Google Web",
+          "URLTemplate": "https://www.google.com/search?udm=14&q={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://www.google.com/favicon.ico",
+          "Alias": ":gw",
+          "Description": "Google Web Search (text only)"
+        },
+        {
+          "Name": "Google Images",
+          "URLTemplate": "https://www.google.com/search?udm=2&q={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://www.google.com/favicon.ico",
+          "Alias": ":gi",
+          "Description": "Google Image Search"
+        },
+        {
+          "Name": "Google News",
+          "URLTemplate": "https://www.google.com/search?udm=12&q={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://www.google.com/favicon.ico",
+          "Alias": ":gn",
+          "Description": "Google News Search"
+        },
+        {
+          "Name": "Google Maps",
+          "URLTemplate": "https://www.google.com/maps/search/{searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://www.google.com/favicon.ico",
+          "Alias": ":gm",
+          "Description": "Google Maps Search"
+        }
+      ]
+    }
+  }
+}
