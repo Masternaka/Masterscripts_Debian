@@ -1,169 +1,135 @@
-# 🧈 butterscripts
-![Made for Debian](https://img.shields.io/badge/Made%20for-Debian-A81D33?style=for-the-badge&logo=debian&logoColor=white)
-![Stars](https://img.shields.io/gitea/stars/drew/butterscripts?gitea_url=https://justaguy.dev&style=for-the-badge&logo=forgejo&logoColor=white&color=yellow&label=Stars)
-![Forks](https://img.shields.io/gitea/forks/drew/butterscripts?gitea_url=https://justaguy.dev&style=for-the-badge&logo=forgejo&logoColor=white&color=blue&label=Forks)
-![Last Commit](https://img.shields.io/gitea/last-commit/drew/butterscripts?gitea_url=https://justaguy.dev&style=for-the-badge&logo=forgejo&logoColor=white&color=green&label=Last%20Commit)
+# 🧈 Masterscripts
 
-A modular collection of scripts I use across my Debian setups — minimal and practical. These scripts automate installs, configure tools, apply theming, and tweak the system just how I like it.
+Une collection modulaire, minimale et pratique de scripts d'installation, de configuration, de thématisation et d'optimisation pour Debian et ses dérivées.
 
 ---
 
-## Overview
+## 📋 Présentation
 
-Butterscripts is a collection of utility scripts that help streamline various tasks in Linux. These scripts are organized into different directories based on their functionality and purpose, making it easy to find the script you need.
+**Masterscripts** rassemble des scripts d'installation et de configuration automatisés pour rationaliser la mise en place d'un environnement Linux minimaliste et réactif (particulièrement adapté aux gestionnaires de fenêtres / Window Managers). 
 
-## Repository Structure
-
-The repository is organized into the following directories:
-
-
-### `/browsers`
-
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/browsers)
-- **brave**: Brave browser
-- **firefox**: Firefox latest
-- **floorp**: Floorp
-- **zen**: Zen browser
-- **more**
+Chaque dossier regroupe des scripts thématiques pour installer des logiciels, configurer des terminaux, appliquer des thèmes GTK/icônes ou ajuster le système.
 
 ---
 
-### `/discord` 
+## 🚀 Prise en main rapide
 
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/discord)
-- **Install**: Discord latest binary and built-in updater.
+Vous pouvez lancer l'installateur interactif principal qui fournit un menu TUI simple par catégorie :
 
----
-
-### `/fastfetch`
-
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/fastfetch)
-- **fastfetch**: fastfetch latest
-- **Auto alias**: for Bash, Zsh, and Fish
-- **5 configurations**: default, debian-red, fancy, minimal, neon, justaguy and server
+```bash
+git clone (Mettre à jour adresse du dépôt GitHub ici)
+cd Masterscriptscripts
+chmod +x installer.sh
+./installer.sh
+```
 
 ---
 
-### `/ghostty`
+## 📂 Structure du dépôt
 
-- **install_ghostty.sh**: Installs Ghostty terminal emulator from ButterRepo (default terminal for all WM setups)
-- **config**: Curated configuration file for Ghostty (GitHub Dark theme, splits, tabs, keybinds)
-- **style.css**: Custom GTK CSS for Ghostty tab bar styling
-
----
-
-### `/git`
-
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/git)
-- **ghee**: The git workflow in one program — repo hub, stage/unstage cockpit, commit/file pickers, ssh picker, commit-and-push flow, multi-repo dashboard and sweep
-- **today.sh**: Today's commit counts across repos
+### ` installer.sh`
+* **Menu interactif (TUI)** : Découvre et exécute automatiquement les scripts classés par catégorie dans le dépôt.
 
 ---
 
-### `/kitty`
+### 🌐 `/browsers`
+*Documentation : [browsers/README.md](browsers/README.md)*
 
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/kitty)
-- **install_kitty.sh**: Installs kitty terminal emulator from the official Debian repository (no third-party repo needed)
-- **kitty.conf**: Curated configuration (GitHub Dark theme, splits, tabs, ALT keybinds)
-- **current-theme.conf**: Default theme seed; swap with `kitty +kitten themes`
-- **themes/**: Custom themes (Trapped in Amber) used by the WM theme switchers
-
----
-
-### `/media`
-
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/media)
-- **clipmkv**: Losslessly clip an mkv by start/end timestamps
-- **mergemkvs**: Losslessly concatenate every mkv in `~/Videos`
-- **stripgeo**: Removes GPS/location metadata from images (exiftool)
+* **`install_browsers.sh`** : Script interactif permettant d'installer divers navigateurs web sur Debian Stable :
+  * **Helium Browser** *(via ButterRepo)*
+  * **Firefox Latest** *(dépôt officiel Mozilla APT)*
+  * **LibreWolf** *(via extrepo)*
+  * **Brave Browser** *(dépôt officiel Brave)*
+  * **Floorp** *(dépôt PPA)*
+  * **Zen Browser** *(via ButterRepo)*
+  * **Chromium** *(dépôts Debian)*
 
 ---
 
-### `/neovim`
+### 💬 `/discord`
+*Documentation : [discord/README.md](discord/README.md)*
 
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/neovim)
-- **neovim.sh**: Installs Neovim + a JustAGuyLinux config (`nvim` vim-motions, or `butter-nvim` GUI keybinds)
-- **build-neovim.sh**: Builds and installs Neovim from source code
-
----
-
-### `/setup`
-
-- **add_butterrepo.sh**: Adds the ButterRepo APT repository
-- **install_caligula.sh**: Installs Caligula disk imaging TUI
-- **install_geany.sh**: Installs Geany text editor (APT or ButterRepo options)
-- **install_mise.sh**: Installs mise (dev-tool version manager) + wires shell activation
-- **install_picom.sh**: Installs Picom compositor
-- **optional_tools.sh**: Interactive installer for development tools including [ButterBash](https://justaguy.dev/drew/butterbash) ⭐
-- **wm-chooser.sh**: Multi-select window manager installer (awesome, bspwm, dwm, i3, openbox, qtile, sway, swayfx)
+* **`discord`** : Télécharge, installe et met à jour automatiquement la dernière version binaire de Discord dans `/opt/Discord` avec intégration du raccourci dans `~/.local/bin` et le menu d'applications.
 
 ---
 
-### `/st`
+### 👻 `/ghostty`
 
-- **install_st.sh**: Installs st (simple terminal)
-
----
-
-### `/system`
-
-- **install_bluetooth.sh**: Installs and configures Bluetooth support
-- **install_lightdm.sh**: Installs LightDM display manager
-- **install_printer_support.sh**: Sets up printer support
+* **`install_ghostty.sh`** : Installe l'émulateur de terminal Ghostty à partir du dépôt ButterRepo (terminal par défaut pour les configurations WM).
+* **`config`** : Fichier de configuration optimisé pour Ghostty (thème GitHub Dark, gestion des onglets, divisions et raccourcis).
+* **`style.css`** : Style GTK CSS personnalisé pour la barre d'onglets de Ghostty.
 
 ---
 
-### `/theming`
+### 🐱 `/kitty`
+*Documentation : [kitty/README.md](kitty/README.md)*
 
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/theming)
-- **nerdfonts**: Installs curated list of popular Nerd Fonts.
-- **install-theme**: Installs my favorite GTK theme and Dracula Dark icon theme
-
----
-
-### `/wezterm`
-
-- [Installation and Documentation](https://justaguy.dev/drew/butterscripts/src/branch/main/wezterm)
-- **install_wezterm.sh**: Installs WezTerm terminal emulator from official nightly repository (available via optional_tools)
-- **wezterm.lua**: Curated lua configuration file for WezTerm
+* **`install_kitty.sh`** : Installe l'émulateur de terminal Kitty depuis les dépôts officiels Debian.
+* **`kitty.conf`** : Configuration optimisée (thème GitHub Dark, raccourcis Alt, disposition des fenêtres).
+* **`current-theme.conf`** : Thème par défaut, modifiable avec la commande `kitty +kitten themes`.
+* **`themes/trapped-in-amber.conf`** : Thème personnalisé « Trapped in Amber » pour les sélecteurs de thèmes WM.
 
 ---
 
-### `/zed`
+### 📝 `/neovim`
+*Documentation : [neovim/README.md](neovim/README.md)*
 
-- **settings.json**: Curated configuration file for Zed text editor
-
----
-
-Thanks to all contributors and the open source community for inspiration and code references.
-## 🧈 Built For
-
-- **Butterbian Linux** (and other Debian-based systems)
-- Window manager setups (BSPWM, Openbox, etc.)
-- Users who like things lightweight, modular, and fast
-
-> Butterbian Linux was a joke. The joke got an ISO. The ISO got a website. Send help.
+* **`neovim.sh`** : Installe Neovim ainsi que la configuration JustAGuyLinux (`nvim` avec raccourcis Vim, ou `butter-nvim` avec raccourcis GUI).
+* **`build-neovim.sh`** : Compile et installe Neovim directement depuis le code source.
 
 ---
 
-## License
+### ⚙️ `/setup`
 
-GPL-2.0 - See [LICENSE](LICENSE) for details.
-
-## Support
-
-<a href="https://www.buymeacoffee.com/justaguylinux" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy me a coffee" /></a>
-
-## Connect
-
-- [YouTube](https://youtube.com/@justaguylinux) — tutorials and guides
-- [Butterforge](https://justaguy.dev/drew) — source code and projects
-- [The Butter Lab](https://lab.justaguylinux.com) — Discourse forum
-- [The Churn](https://justaguylinux.chat) — community chat (Fluxer)
-- [Wiki](https://justaguy.wiki) — documentation and guides
-- [Mastodon](https://fosstodon.org/@justaguylinux) — @justaguylinux@fosstodon.org
-- [Butterbian](https://butterbian.org) — a Debian-based distro
+* **`check_xlibre.sh`** : Vérifie si le serveur X XLibre est présent sur le système.
+* **`install_caligula.sh`** : Installe l'outil TUI de création d'images disque Caligula.
+* **`install_geany.sh`** : Installe l'éditeur de texte Geany (choix entre APT et ButterRepo).
+* **`install_mise.sh`** : Installe `mise` (gestionnaire de versions d'outils de développement) et active son intégration dans le shell.
+* **`install_picom.sh`** : Installe le compositeur d'affichage Picom.
+* **`optional_tools.sh`** : Installateur interactif d'outils de développement optionnels (notamment [ButterBash](https://justaguy.dev/drew/butterbash) ⭐).
+* **`wm-chooser.sh`** : Installateur multi-sélection pour gestionnaires de fenêtres (*Awesome, BSPWM, DWM, i3, Openbox, Qtile, Sway, SwayFX*).
 
 ---
 
-Made with butter by JustAGuyLinux
+### 🖥️ `/st`
+*Documentation : [st/ST_PATCH_RECOMMENDATIONS.md](st/ST_PATCH_RECOMMENDATIONS.md)*
+
+* **`install_st.sh`** : Installe et configure le terminal minimaliste `st` (Simple Terminal).
+
+---
+
+### 🛠️ `/system`
+
+* **`install_bluetooth.sh`** : Installe et configure le support Bluetooth (`bluez`, `blueman`, etc.).
+* **`install_lightdm.sh`** : Installe et configure le gestionnaire de connexion LightDM.
+* **`install_printer_support.sh`** : Configure le support d'impression (CUPS et pilotes).
+* **`lightdm-greeter.css`** : Style CSS personnalisé pour l'écran de connexion LightDM.
+
+---
+
+### 🎨 `/theming`
+*Documentation : [theming/README.md](theming/README.md)*
+
+* **`install_nerdfonts.sh`** : Installe une sélection de polices Nerd Fonts populaires (*JetBrains Mono, Fira Code*, etc.).
+* **`install_theme.sh`** : Installe le thème GTK et le thème d'icônes sombre Dracula.
+* **`install_minimal_theme.sh`** : Installe une configuration de thème GTK et d'icônes minimaliste.
+* **`ytsubs.sh`** : Script bash pour récupérer le nombre d'abonnés d'une chaîne YouTube via l'API Data v3 (utile pour les barres de statut).
+
+---
+
+### ⚡ `/wezterm`
+*Documentation : [wezterm/README.md](wezterm/README.md)*
+
+* **`install_wezterm.sh`** : Installe l'émulateur de terminal WezTerm depuis le dépôt nightly officiel.
+* **`wezterm.lua`** : Configuration Lua personnalisée pour WezTerm.
+* **`wezterm-minimal-iterm.lua`** : Variante minimaliste de la configuration WezTerm.
+
+---
+
+## 🧈 Conçu pour
+
+* **Debian Linux** (et autres distributions basées sur Debian Stable)
+* Les configurations basées sur des gestionnaires de fenêtres (*BSPWM, Openbox, i3, Sway, etc.*)
+* Les utilisateurs recherchant un système rapide, modulaire et léger
+
+---
